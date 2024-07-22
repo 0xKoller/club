@@ -1,0 +1,72 @@
+[
+  {
+    "id": 5,
+    "name": "Acosta, Lautaro",
+    "twitter": "lautidev_"
+  },
+  {
+    "id": 4,
+    "name": "Boiko, Juan Ignacio",
+    "twitter": "BoikoJuani"
+  },
+  {
+    "id": 6,
+    "name": "Irigoyen, Guido",
+    "twitter": "GuidooIrigoyen"
+  },
+  {
+    "id": 7,
+    "name": "Koller, Jose Luis",
+    "twitter": "0xKoller"
+  },
+  {
+    "id": 8,
+    "name": "Montone, Nicolás",
+    "twitter": "montonenico"
+  },
+  {
+    "id": 9,
+    "name": "Pedaccio, Facundo",
+    "twitter": "fpedaccio"
+  },
+  {
+    "id": 11,
+    "name": "Ratti, Valentin",
+    "twitter": "vsratti"
+  },
+  {
+    "id": 10,
+    "name": "Radovich, Valentin",
+    "twitter": "software_valen"
+  },
+  {
+    "id": 1,
+    "name": "Rolandi, Fausto",
+    "twitter": "FaustoR0"
+  },
+  {
+    "id": 12,
+    "name": "Rojas, Alejo",
+    "twitter": "alejorrojass"
+  },
+  {
+    "id": 13,
+    "name": "Ruberto, Santiago",
+    "twitter": "SantiagoSirvana"
+  },
+  {
+    "id": 3,
+    "name": "Solanes, Fede",
+    "twitter": "FedeSolanes"
+  },
+  {
+    "id": 2,
+    "name": "Trujillo, Luciano",
+    "twitter": "LuTrujilloAR"
+  },
+  {
+    "id": 14,
+    "name": "Zarate, Mateo",
+    "twitter": "mateozaratef"
+  }
+]
