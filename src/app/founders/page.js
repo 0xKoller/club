@@ -19,7 +19,7 @@ function page() {
           <Link href='https://x.com/montonenico'>Montone, Nicolás</Link>
         </li>
         <li>
-          <Link href='Pedaccio, Facundo'>https://x.com/fpedaccio</Link>
+          <Link href='https://x.com/fpedaccio'>Pedaccio, Facundo</Link>
         </li>
         <li>
           <Link href='https://x.com/software_valen'>Radovich, Valentin</Link>
