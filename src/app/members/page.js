@@ -1,67 +1,124 @@
-// page.js
-import React from "react";
-import data from "./member.json";
-import Link from "next/link";
+'use client';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import data from './member.json';
 
 function Page() {
-  const quantity = data.length;
-  return (
-    <main className='flex flex-col place-items-center m-1 p-2'>
-      <Link className='absolute left-24' href='/'>
-        {"<-"}
-      </Link>
-      <h1 className='text-2xl font-bold text-center mb-2'>Members</h1>
-      <div className='md:w-2/3 p-2'>
-        <div className='grid gap-2 md:grid-cols-2 mb-2'>
-          <p>
-            En esta sección se encuentran los miembros del O(n) Club, quienes
-            contribuyen con su experiencia y conocimientos al mismo. Si deseas
-            contactar a alguno de ellos, puedes hacerlo a través de sus redes
-            sociales.
-          </p>
-          <div className='hidden text-center md:flex flex-col place-items-center gap-2'>
-            <p>Si deseas unirte al club, puedes hacerlo haciendo click</p>
-            <Link
-              className='text-neutral-800 pointer-events-none flex flex-col place-items-center border-2 hover:shadow-neutral-600 hover:border-neutral-700 transition-all duration-200 border-neutral-800 bg-neutral-900 hover:shadow-xl shadow-md shadow-neutral-700 p-2 rounded-md w-[150px] text-center md:w-[200px]'
-              href='google.com'
-            >
-              Unirse a O(n) Club
-            </Link>
-          </div>
-        </div>
-        <p className='text-center md:text-end me-1 mb-2'>
-          Cantidad de miembros: {quantity}/20{" "}
-        </p>
+  const [selectedMember, setSelectedMember] = useState(0);
+  const router = useRouter();
+  const [isMobile, setIsMobile] = useState(false);
 
-        <div className='flex flex-wrap gap-2  justify-evenly '>
-          {data.map((member) => {
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handleSelection = (direction) => {
+    if (direction === 'up') {
+      setSelectedMember(prev => prev > 0 ? prev - 1 : data.length - 1);
+    } else {
+      setSelectedMember(prev => prev < data.length - 1 ? prev + 1 : 0);
+    }
+  };
+
+  const handleTwitterOpen = () => {
+    window.open(`https://x.com/${data[selectedMember].twitter}`, '_blank');
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      switch(e.key) {
+        case 'ArrowUp':
+          e.preventDefault();
+          handleSelection('up');
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          handleSelection('down');
+          break;
+        case 'Enter':
+          e.preventDefault();
+          handleTwitterOpen();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          router.push('/');
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedMember, router]);
+
+  return (
+    <div className="terminal">
+      <div className="terminal-header">MEMBERS.DAT - O(n) Club</div>
+      <div className="terminal-content">
+        <div className="command-line">
+          Directory listing of MEMBERS.DAT
+        </div>
+        <div className="command-line">
+          Total members: {data.length}/20
+        </div>
+        <div className="command-line">
+          Press ENTER to view Twitter profile, ESC to return
+        </div>
+        <div className="directory-listing">
+          {data.map((member, index) => {
             const [lastName, firstName] = member.name.split(", ");
             return (
-              <Link
-                href={"https://x.com/" + member.twitter}
-                key={member.name}
-                className='flex flex-col place-items-center border-2 hover:shadow-neutral-600 hover:border-neutral-700 transition-all duration-200 border-neutral-800 bg-neutral-900 hover:shadow-xl shadow-md shadow-neutral-700 p-2 rounded-md w-[150px] text-center md:w-[200px]'
+              <div
+                key={member.id}
+                className={`menu-option ${index === selectedMember ? 'selected' : ''}`}
               >
-                <span>
-                  <strong>{lastName}</strong>
-                  <br />
-                  {firstName}
-                </span>
-              </Link>
+                {`${lastName.padEnd(15)} ${firstName.padEnd(15)} [@${member.twitter}]`}
+              </div>
             );
           })}
         </div>
-        <div className='flex text-center md:hidden flex-col place-items-center gap-2 mt-8'>
-          <p>Si deseas unirte al club, puedes hacerlo haciendo click</p>
-          <Link
-            className='flex flex-col place-items-center border-2 hover:shadow-neutral-600 hover:border-neutral-700 transition-all duration-200 border-neutral-800 bg-neutral-900 hover:shadow-xl shadow-md shadow-neutral-700 p-2 rounded-md w-[150px] text-center md:w-[200px]'
-            href='google.com'
-          >
-            Unirse a O(n) Club
-          </Link>
-        </div>
+
+        {isMobile && (
+          <div className="mobile-controls">
+            <div className="controls-row">
+              <button 
+                className="nav-button"
+                onClick={() => handleSelection('up')}
+                disabled={selectedMember === 0}
+              >
+                ▲
+              </button>
+              <button 
+                className="nav-button esc-button"
+                onClick={() => router.push('/')}
+              >
+                ESC
+              </button>
+              <button 
+                className="nav-button"
+                onClick={() => handleSelection('down')}
+                disabled={selectedMember >= data.length - 1}
+              >
+                ▼
+              </button>
+            </div>
+            <div className="controls-row">
+              <button 
+                className="nav-button enter-button"
+                onClick={handleTwitterOpen}
+              >
+                ENTER → TWITTER
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </main>
+    </div>
   );
 }
 

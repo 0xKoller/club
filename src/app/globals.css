@@ -1,40 +1,433 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Bentham&display=swap");
+
+@font-face {
+  font-family: 'DOS';
+  src:
+       url('/fonts/Perfect-DOS-VGA-437.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Force DOS font usage */
+* {
+  font-family: 'DOS', 'Perfect DOS VGA 437', monospace !important;
+}
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 255, 255, 255;
+  --foreground: #AAAAAA;
+  --background: #000000;
+  --highlight-bg: #FFFFFF;
+  --highlight-text: #000000;
+  --border-color: #AAAAAA;
+  --menu-bg: #0000AA;
+  --menu-text: #FFFFFF;
+  --cursor: #AAAAAA;
+}
+
+* {
+  cursor: none !important;
 }
 
 body {
-  color: #aaa;
-  background: #1a1a1a;
-  font-family: "Bentham", serif;
-  font-weight: 400;
-  font-style: normal;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'DOS', monospace;
+  font-size: 16px;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+.terminal {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: var(--menu-bg);
+  color: var(--menu-text);
+  padding: 2px 8px;
+  font-family: 'DOS', monospace;
+  z-index: 10;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: var(--cursor);
+  animation: blink 1s step-end infinite;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.command-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 2px 0;
+}
+
+.prompt {
+  white-space: nowrap;
+}
+
+.command-input {
+  color: transparent;
+  text-shadow: 0 0 0 var(--foreground);
+  caret-color: transparent;
+  background: transparent;
+  border: none;
+  font-family: 'DOS', monospace;
+  font-size: 16px;
+  padding: 0;
+  outline: none;
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-option {
+  padding: 2px 8px;
+  color: var(--foreground);
+}
+
+.menu-option.selected {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+/* DOS-style elements */
+h1, h2, h3 {
+  color: var(--menu-text);
+  background: var(--menu-bg);
+  font-weight: normal;
+  margin-bottom: 8px;
+  padding: 2px 4px;
+}
+
+a {
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+a:hover {
+  background-color: var(--highlight-bg);
+  color: var(--highlight-text);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 8px 0;
+}
+
+/* DOS-style box */
+.dos-box {
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  margin: 8px 0;
+  background: var(--background);
+  box-shadow: 2px 2px 0 var(--border-color);
+}
+
+/* DOS-style button */
+.dos-button {
+  background: var(--background);
+  border: 1px solid var(--border-color);
+  color: var(--foreground);
+  padding: 2px 4px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--border-color);
+}
+
+.dos-button:hover {
+  background: var(--highlight-bg);
+  color: var(--highlight-text);
+}
+
+/* DOS-style list */
+ul {
+  list-style-type: none;
+  padding-left: 16px;
+}
+
+ul li::before {
+  content: '>';
+  margin-right: 8px;
+  color: var(--foreground);
+}
+
+.terminal-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: var(--menu-bg);
+  color: var(--menu-text);
+  padding: 2px 8px;
+  font-family: 'DOS', monospace;
+  z-index: 10;
+  text-align: center;
+}
+
+.terminal-content {
+  margin-top: 24px;
+  padding: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-grow: 1;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.directory-listing {
+  margin: 16px 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.manifesto-text {
+  font-family: 'DOS', monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.2;
+  color: var(--foreground);
+  padding: 0 8px;
+  margin-bottom: 60px; /* Space for mobile controls */
+}
+
+.text-line {
+  padding: 2px 0;
+}
+
+.mobile-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--background);
+  border-top: 1px solid var(--border-color);
+}
+
+.controls-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-button {
+  background: var(--menu-bg);
+  color: var(--menu-text);
+  border: none;
+  padding: 8px 16px;
+  font-family: 'DOS', monospace;
+  font-size: 16px;
+  cursor: none;
+  touch-action: manipulation;
+  min-width: 60px;
+  text-align: center;
+}
+
+.enter-button {
+  background: var(--menu-bg);
+  padding: 8px 24px;
+  width: 200px;
+}
+
+.esc-button {
+  background: var(--border-color);
+}
+
+.nav-button:disabled {
+  opacity: 0.5;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  body {
+    padding: 0;
+  }
+
+  .terminal-content {
+    padding: 8px;
+  }
+
+  .command-line, 
+  .menu-option, 
+  .detail-line {
+    font-size: 14px;
+  }
+
+  .directory-listing {
+    margin: 8px 0;
+  }
+
+  .menu-option {
+    padding: 4px 8px;
+  }
+
+  /* Adjust long text wrapping */
+  .detail-line {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .manifesto-text {
+    font-size: 14px;
+  }
+
+  .text-line {
+    padding: 4px 0;
+  }
+  
+  .mobile-controls {
+    padding: 12px;
+    gap: 16px;
+  }
+  
+  .nav-button {
+    padding: 12px 16px;
+    font-size: 20px;
+  }
+
+  .terminal-content {
+    margin-bottom: 140px;
   }
 }
 
-h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  font-style: italic;
+/* Ensure proper wrapping for directory listings */
+.directory-listing .menu-option {
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0;
+/* Adjust founder and member details for mobile */
+.founder-details,
+.member-details {
+  margin: 8px 0;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
 }
-span {
-  white-space: pre;
+
+/* Virtual Keyboard Styles */
+.virtual-keyboard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--background);
+  border-top: 1px solid var(--border-color);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px;
+}
+
+.keyboard-key {
+  background: var(--menu-bg);
+  color: var(--menu-text);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  font-family: 'DOS', monospace;
+  font-size: 14px;
+  min-width: 32px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.space-key {
+  width: 160px;
+}
+
+.enter-key {
+  width: 80px;
+  background: var(--border-color);
+}
+
+.backspace-key {
+  width: 60px;
+}
+
+.shift-key {
+  width: 60px;
+  background: var(--border-color);
+}
+
+/* Adjust terminal content to make room for keyboard */
+@media (max-width: 768px) {
+  .terminal-content {
+    margin-bottom: 280px; /* Space for full virtual keyboard */
+  }
+
+  .keyboard-key {
+    padding: 6px;
+    font-size: 12px;
+    height: 36px;
+  }
+
+  /* Adjust key sizes for smaller screens */
+  @media (max-width: 380px) {
+    .keyboard-key {
+      min-width: 24px;
+      padding: 4px;
+      font-size: 11px;
+      height: 32px;
+    }
+
+    .space-key {
+      width: 120px;
+    }
+
+    .enter-key {
+      width: 60px;
+    }
+
+    .shift-key,
+    .backspace-key {
+      width: 50px;
+    }
+  }
+}
+
+/* Active state for keys */
+.keyboard-key:active {
+  background: var(--highlight-bg);
+  color: var(--highlight-text);
 }
