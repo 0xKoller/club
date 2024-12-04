@@ -77,7 +77,7 @@ function Page() {
     '-------',
     '> Ser voucheado por un miembro fundador',
     '> Screening con otros fundadores en algun evento que la O(n) asista',
-    '> Aporte de valor en X y a la O(n)',
+    '> Aporte de valor en X a la comunidad emprendedora sin importar el rubro',
     '> Notificacion de aceptacion por parte del miembro fundador inicial',
     '',
     'NOTA',
