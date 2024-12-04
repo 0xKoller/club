@@ -264,3 +264,18 @@ body {
   margin-top: 16px;
   overflow-x: hidden;
 }
+
+.telegram-community {
+  flex: none;
+}
+
+.matrix-effect {
+  animation: matrix 0.5s infinite;
+  text-shadow: 0 0 10px #0f0;
+}
+
+@keyframes matrix {
+  0% { text-shadow: 0 0 10px #0f0; }
+  50% { text-shadow: 0 0 20px #0f0; }
+  100% { text-shadow: 0 0 10px #0f0; }
+}

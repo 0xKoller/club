@@ -13,6 +13,7 @@ export default function Home() {
     'members   - List club members',
     'founders  - View founding members',
     'apply     - Apply to O(n) Club',
+    'community - Join our Telegram community',
     'clear    - Clear terminal',
     'exit     - Exit terminal',
     ''
@@ -25,6 +26,8 @@ export default function Home() {
     leftColumn: {},
     rightColumn: {}
   });
+
+  const [matrix, setMatrix] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -98,8 +101,12 @@ export default function Home() {
         'members   - List club members',
         'founders  - View founding members',
         'apply     - Apply to O(n) Club',
+        'community - Join our Telegram community',
         'clear    - Clear terminal',
         'exit     - Exit terminal',
+        '',
+        'Hidden commands? Maybe try:',
+        'matrix, hack, coffee, sudo',
         ''
       ]);
     },
@@ -108,7 +115,43 @@ export default function Home() {
     members: () => router.push('/members'),
     founders: () => router.push('/founders'),
     apply: () => router.push('/apply'),
-    exit: handleExit
+    community: () => router.push('/community'),
+    exit: handleExit,
+    matrix: () => {
+      setMatrix(true);
+      setHistory(prev => [...prev, 
+        'Initiating Matrix protocol...',
+        'Wake up, Neo...',
+        'The Matrix has you...',
+        'Follow the white rabbit.',
+        'Knock, knock, Neo.',
+        ''
+      ]);
+      setTimeout(() => setMatrix(false), 5000);
+    },
+    hack: () => {
+      setHistory(prev => [...prev,
+        'INITIATING HACK SEQUENCE...',
+        '[██████████] 100% complete',
+        'ACCESS GRANTED',
+        'Just kidding! Please don\'t call the Wizard.',
+        ''
+      ]);
+    },
+    coffee: () => {
+      setHistory(prev => [...prev,
+        '☕ 418: I\'m a teapot',
+        'Cannot brew coffee in a teapot',
+        ''
+      ]);
+    },
+    sudo: () => {
+      setHistory(prev => [...prev,
+        'Nice try! But you\'re not an admin...',
+        'This incident will be reported.',
+        ''
+      ]);
+    },
   };
 
   const handleCommand = (cmd) => {
@@ -146,7 +189,7 @@ export default function Home() {
 
 
   return (
-    <div className="terminal">
+    <div className={`terminal ${matrix ? 'matrix-effect' : ''}`}>
       <div className="terminal-header">
         <div className="header-title">O(n) Club - Terminal</div>
         <div className="header-info">
@@ -244,6 +287,12 @@ export default function Home() {
                 onClick={() => handleCommand('apply')}
               >
                 APPLY
+              </button>
+              <button 
+                className="nav-button"
+                onClick={() => handleCommand('community')}
+              >
+                COMMUNITY
               </button>
             </div>
           </div>
