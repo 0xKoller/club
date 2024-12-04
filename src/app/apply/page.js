@@ -7,6 +7,11 @@ function Page() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
 
+  const [systemInfo, setSystemInfo] = useState({
+    leftColumn: {},
+    rightColumn: {}
+  });
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -17,53 +22,74 @@ function Page() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  useEffect(() => {
+    const updateSystemInfo = () => {
+      const platform = navigator.platform;
+      const browserInfo = navigator.userAgent.split(' ').pop();
+      const osInfo = platform;
+      
+      const memory = navigator.deviceMemory 
+        ? `RAM: ${navigator.deviceMemory}GB` 
+        : '';
+
+      const screenSize = `Resolution: ${window.screen.width}x${window.screen.height}`;
+      const colorDepth = `Color Depth: ${window.screen.colorDepth}-bit`;
+      const connection = navigator.connection?.effectiveType 
+        ? `Network: ${navigator.connection.effectiveType}` 
+        : '';
+
+      setSystemInfo({
+        leftColumn: {
+          os: `OS: ${osInfo}`,
+          browser: `Browser: ${browserInfo}`,
+          screen: screenSize
+        },
+        rightColumn: {
+          memory,
+          colorDepth,
+          connection
+        }
+      });
+    };
+
+    updateSystemInfo();
+    window.addEventListener('resize', updateSystemInfo);
+    return () => window.removeEventListener('resize', updateSystemInfo);
+  }, []);
+
   const content = [
-    'MANIFIESTO.TXT',
+    'APPLY.TXT',
     '------------',
     'Presione ESC para volver al menú principal',
     'Use las flechas arriba/abajo para navegar',
     '================',
     '',
-    'INTRODUCCION',
-    '------------',
-    'En un contexto global marcado por el rápido avance de las tecnologías de',
-    'la información, se hace imperativo el establecimiento de plataformas que',
-    'faciliten la colaboración y el intercambio intelectual entre',
-    'profesionales y emprendedores del sector. El O(n) Club se constituye con',
-    'el propósito de reunir a individuos interesados en la exploración y el',
-    'debate sobre el ecosistema tecnológico contemporáneo.',
-    '',
-    'MISION',
-    '------',
-    'La misión del O(n) Club es crear un entorno propicio para la interacción',
-    'y el crecimiento intelectual de sus miembros, facilitando el intercambio',
-    'de conocimientos y experiencias.',
-    '',
-    'VISION',
-    '------',
-    'El O(n) Club aspira a consolidarse como una comunidad de referencia en',
-    'el ámbito de la tecnología, donde la convergencia de ideas innovadoras',
-    'permita la materialización de proyectos vanguardistas y exitosos.',
-    '',
-    'OBJETIVOS',
-    '---------',
-    '> Fomentar el Networking',
-    '> Promover el Conocimiento',
-    '> Impulsar Proyectos',
-    '> Incentivar la Innovación',
-    '',
-    'PRINCIPIOS',
+    'REQUISITOS',
     '----------',
-    '> Colaboración',
-    '> Inclusión',
-    '> Transparencia',
-    '> Compromiso',
-    '> Confidencialidad',
-    '> Ambición y Propósito',
-    '> Reuniones Anuales',
-    '> Admisión Abierta',
-    '> Autoridad de los Miembros Fundadores',
+    '> BOLD and different',
+    '> Tener presencia activa en X',
+    '> Sentirse orgulloso de ser argentino',
+    '> Compartir la visión del club',
+    '> Ser emprendedor',
+    '> Saber de lo que hablas',
     '',
+    'PROCESO',
+    '-------',
+    '> Ser voucheado por un miembro fundador',
+    '> Screening con otros fundadores en algun evento que la O(n) asista',
+    '> Aporte de valor en X y a la O(n)',
+    '> Notificacion de aceptacion por parte del miembro fundador inicial',
+    '',
+    'NOTA',
+    '----',
+    'Las solicitudes son evaluadas diariamente por los miembros fundadores.',
+    'La decisión final es inapelable.',
+    'El proceso de aplicación es abierto a todo el publico.',
+    'El comité de fundadores se reserva el derecho de no aceptar una solicitud por cualquier motivo.',
+    '',
+    '> O(n) Club',
+    '> 2024',
+    ''
   ];
 
   const handleScroll = (direction) => {
@@ -100,7 +126,19 @@ function Page() {
 
   return (
     <div className="terminal">
-      <div className="terminal-header">MANIFIESTO.TXT - O(n) Club</div>
+      <div className="terminal-header">
+        <div className="header-title">APPLY.TXT - O(n) Club</div>
+        <div className="header-info">
+          <div className="info-columns">
+            <div className="info-column">
+              {Object.values(systemInfo.leftColumn || {}).filter(Boolean).join(' | ')}
+            </div>
+            <div className="info-column">
+              {Object.values(systemInfo.rightColumn || {}).filter(Boolean).join(' | ')}
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="terminal-content">
         <pre className="manifesto-text">
           {content.slice(scrollPosition, scrollPosition + 20).map((line, i) => (

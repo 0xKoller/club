@@ -12,6 +12,7 @@ export default function Home() {
     'manifesto - View O(n) Club manifesto',
     'members   - List club members',
     'founders  - View founding members',
+    'apply     - Apply to O(n) Club',
     'clear    - Clear terminal',
     'exit     - Exit terminal',
     ''
@@ -20,6 +21,11 @@ export default function Home() {
   const inputRef = useRef(null);
   const router = useRouter();
 
+  const [systemInfo, setSystemInfo] = useState({
+    leftColumn: {},
+    rightColumn: {}
+  });
+
   useEffect(() => {
     const checkMobile = () => {
       setShowKeyboard(window.innerWidth <= 768);
@@ -27,6 +33,45 @@ export default function Home() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const updateSystemInfo = () => {
+      const platform = navigator.platform;
+      const browserInfo = navigator.userAgent.split(' ').pop();
+      const osInfo = platform;
+      
+      const memory = navigator.deviceMemory 
+        ? `RAM: ${navigator.deviceMemory}GB` 
+        : '';
+
+      const screenSize = `Resolution: ${window.screen.width}x${window.screen.height}`;
+      const colorDepth = `Color Depth: ${window.screen.colorDepth}-bit`;
+      const connection = navigator.connection?.effectiveType 
+        ? `Network: ${navigator.connection.effectiveType}` 
+        : '';
+
+      setSystemInfo({
+        leftColumn: {
+          os: `OS: ${osInfo}`,
+          browser: `Browser: ${browserInfo}`,
+          screen: screenSize
+        },
+        rightColumn: {
+          memory,
+          colorDepth,
+          connection
+        }
+      });
+    };
+
+    updateSystemInfo();
+    window.addEventListener('resize', updateSystemInfo);
+    return () => window.removeEventListener('resize', updateSystemInfo);
   }, []);
 
   const handleExit = () => {
@@ -54,6 +99,7 @@ export default function Home() {
         'manifesto - View O(n) Club manifesto',
         'members   - List club members',
         'founders  - View founding members',
+        'apply     - Apply to O(n) Club',
         'clear    - Clear terminal',
         'exit     - Exit terminal',
         ''
@@ -63,6 +109,7 @@ export default function Home() {
     manifesto: () => router.push('/manifesto'),
     members: () => router.push('/members'),
     founders: () => router.push('/founders'),
+    apply: () => router.push('/apply'),
     exit: handleExit
   };
 
@@ -71,7 +118,24 @@ export default function Home() {
     setHistory(prev => [...prev, `O(N) CLUB:\\>${cmd}`]);
     
     if (commands[trimmedCmd]) {
-      commands[trimmedCmd]();
+      if (trimmedCmd === 'clear') {
+        commands[trimmedCmd]();
+      } else if (trimmedCmd === 'exit') {
+        commands[trimmedCmd]();
+      } else {
+        // Add loading messages
+        setHistory(prev => [...prev, 
+          'Loading...',
+          `Reading ${trimmedCmd.toUpperCase()}.DAT`,
+          'Please wait...',
+          ''
+        ]);
+        
+        // For navigation commands, add delay
+        setTimeout(() => {
+          commands[trimmedCmd]();
+        }, 800);
+      }
     } else {
       setHistory(prev => [...prev, `'${cmd}' is not recognized as an internal command`, '']);
     }
@@ -84,32 +148,22 @@ export default function Home() {
     }
   };
 
-  const handleVirtualKey = (key) => {
-    if (key === 'ENTER') {
-      if (input.trim()) handleCommand(input);
-    } else if (key === 'BACKSPACE') {
-      setInput(prev => prev.slice(0, -1));
-    } else if (key === 'SPACE') {
-      setInput(prev => prev + ' ');
-    } else {
-      setInput(prev => prev + key.toLowerCase());
-    }
-  };
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
-
-  const keyboardLayout = [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
-  ];
 
   return (
     <div className="terminal">
-      <div className="terminal-header">O(n) Club - MS-DOS</div>
+      <div className="terminal-header">
+        <div className="header-title">O(n) Club - Terminal</div>
+        <div className="header-info">
+          <div className="info-columns">
+            <div className="info-column">
+              {Object.values(systemInfo.leftColumn || {}).filter(Boolean).join(' | ')}
+            </div>
+            <div className="info-column">
+              {Object.values(systemInfo.rightColumn || {}).filter(Boolean).join(' | ')}
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="terminal-content">
         {history.map((line, i) => (
           <div key={i} className="command-line">
@@ -123,62 +177,77 @@ export default function Home() {
         
         <div className="command-input-line">
           <span className="prompt">O(N) CLUB:\&gt;</span>
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="command-input"
-            autoFocus
-            autoCapitalize="none"
-          />
-          <span className="cursor"></span>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              className="command-input"
+              autoFocus
+              autoCapitalize="none"
+            />
+            <span 
+              className="cursor"
+              style={{ 
+                position: 'absolute',
+                left: `${input.length * 9.6}px`,
+                top: '50%',
+                transform: 'translateY(-50%)'
+              }}
+            />
+          </div>
         </div>
 
         {showKeyboard && (
-          <div className="virtual-keyboard">
-            {keyboardLayout.map((row, rowIndex) => (
-              <div key={rowIndex} className="keyboard-row">
-                {rowIndex === 3 && (
-                  <button
-                    className="keyboard-key shift-key"
-                    onClick={() => handleVirtualKey('SHIFT')}
-                  >
-                    SHIFT
-                  </button>
-                )}
-                {row.map(key => (
-                  <button
-                    key={key}
-                    className="keyboard-key"
-                    onClick={() => handleVirtualKey(key)}
-                  >
-                    {key}
-                  </button>
-                ))}
-                {rowIndex === 3 && (
-                  <button
-                    className="keyboard-key backspace-key"
-                    onClick={() => handleVirtualKey('BACKSPACE')}
-                  >
-                    ←
-                  </button>
-                )}
-              </div>
-            ))}
-            <div className="keyboard-row">
-              <button
-                className="keyboard-key space-key"
-                onClick={() => handleVirtualKey('SPACE')}
+          <div className="mobile-controls">
+            <div className="controls-row">
+              <button 
+                className="nav-button"
+                onClick={() => handleCommand('help')}
               >
-                SPACE
+                HELP
               </button>
-              <button
-                className="keyboard-key enter-key"
-                onClick={() => handleVirtualKey('ENTER')}
+              <button 
+                className="nav-button esc-button"
+                onClick={() => handleCommand('clear')}
               >
-                ENTER
+                CLEAR
+              </button>
+              <button 
+                className="nav-button"
+                onClick={() => handleCommand('exit')}
+              >
+                EXIT
+              </button>
+            </div>
+            <div className="controls-row">
+              <button 
+                className="nav-button"
+                onClick={() => handleCommand('manifesto')}
+              >
+                MANIFESTO
+              </button>
+              <button 
+                className="nav-button"
+                onClick={() => handleCommand('members')}
+              >
+                MEMBERS
+              </button>
+              <button 
+                className="nav-button"
+                onClick={() => handleCommand('founders')}
+              >
+                FOUNDERS
+              </button>
+            </div>
+            <div className="controls-row">
+              <button 
+                className="nav-button"
+                onClick={() => handleCommand('apply')}
+              >
+                APPLY
               </button>
             </div>
           </div>

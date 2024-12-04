@@ -1,4 +1,6 @@
+
 import "./globals.css";
+import CustomPointer from '@/components/CustomPointer';
 
 export const metadata = {
   title: "O(n) Club",
@@ -25,6 +27,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang='es'>
       <body>
+        <CustomPointer />
         <div className="terminal-wrapper">
           {children}
         </div>
