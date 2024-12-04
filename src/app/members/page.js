@@ -36,7 +36,6 @@ function Page() {
   useEffect(() => {
     const updateSystemInfo = () => {
       const platform = navigator.platform;
-      const userAgent = navigator.userAgent;
       const browserInfo = navigator.userAgent.split(' ').pop();
       const osInfo = platform;
       

@@ -76,11 +76,9 @@ export default function Home() {
 
   const handleExit = () => {
     setHistory(prev => [...prev, `C:\\ON_CLUB>exit`, 'Goodbye!']);
-    // Try different methods to close the window
     setTimeout(() => {
       try {
         window.close();
-        // If window.close() doesn't work, try alternative methods
         if (window.opener) {
           window.opener = null;
           window.open('', '_self');
@@ -123,7 +121,6 @@ export default function Home() {
       } else if (trimmedCmd === 'exit') {
         commands[trimmedCmd]();
       } else {
-        // Add loading messages
         setHistory(prev => [...prev, 
           'Loading...',
           `Reading ${trimmedCmd.toUpperCase()}.DAT`,
@@ -131,7 +128,6 @@ export default function Home() {
           ''
         ]);
         
-        // For navigation commands, add delay
         setTimeout(() => {
           commands[trimmedCmd]();
         }, 800);

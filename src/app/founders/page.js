@@ -10,17 +10,14 @@ function Page() {
 
   const selectedRef = useRef(null);
 
-  // Add system info state
   const [systemInfo, setSystemInfo] = useState({
     leftColumn: {},
     rightColumn: {}
   });
 
-  // Add system info effect
   useEffect(() => {
     const updateSystemInfo = () => {
       const platform = navigator.platform;
-      const userAgent = navigator.userAgent;
       const browserInfo = navigator.userAgent.split(' ').pop();
       const osInfo = platform;
       
